@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết sản phẩm</title>
+
+  <!-- Bootstrap 3 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+  <!-- xZoom -->
+  <link rel="stylesheet" href="https://payalord.github.io/xZoom/dist/xzoom.css">
+
+  <!-- bootstrap-star-rating -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.2/css/star-rating.min.css">
+
+  <style>
+    .product-img { max-width: 400px; display: block; margin: 0 auto; }
+    .product-info { margin-top: 20px; }
+    .progress { margin-top: 10px; }
+    .xzoom-thumbs { margin-top: 15px; }
+    .xzoom-thumbs img { max-width: 80px; margin-right: 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div id="product-detail" class="row">
+    <!-- Hình ảnh chính -->
+    <div class="col-md-6">
+      <img id="product-image" class="xzoom img-responsive product-img" xoriginal="" src="" alt="">
+      <!-- Thumbnails -->
+      <div class="xzoom-thumbs" id="product-thumbs"></div>
+    </div>
+    
+    <!-- Thông tin sản phẩm -->
+    <div class="col-md-6 product-info">
+      <h2 id="product-name"></h2>
+      <h3 id="product-price"></h3>
+      <p id="product-description"></p>
+
+      <!-- Rating -->
+      <input id="product-rating" class="rating" value="0" data-size="xs" data-show-clear="false" data-show-caption="false" readonly>
+
+      <div class="progress">
+        <div id="stock-bar" class="progress-bar" role="progressbar" style="width:0%"></div>
+      </div>
+
+      <a href="#" class="btn btn-success btn-lg" style="margin-top:10px;">
+        <i class="glyphicon glyphicon-plus-sign"></i> Thêm vào giỏ
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- JS dependencies -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://payalord.github.io/xZoom/dist/xzoom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.2/js/star-rating.min.js"></script>
+
+<script>
+  // Dữ liệu sản phẩm, thêm mảng images cho thumbnails
+  const products = {
+    1: {
+      name: "Adidas Samba",
+      price: "₫799.000",
+      description: "Giày chạy bộ nhẹ, lót êm, phù hợp cho đường dài.",
+      image: "imgs/giay1_1.jpg",
+      images: ["imgs/giay1_1.jpg","imgs/giay1_2.jpg","imgs/giay1_3.jpg"],
+      stock: 70,
+      stockClass: "progress-bar-success",
+      rating: 4
+    },
+    2: {
+      name: "Jeep Marry Jane",
+      price: "₫1.299.000",
+      description: "Phong cách thời trang đường phố, đế êm, bền.",
+      image: "imgs/giay2_1.jpeg",
+      images: ["imgs/giay2_1.jpeg","imgs/giay2_2.jpg","imgs/giay2_3.jpg"],
+      stock: 40,
+      stockClass: "progress-bar-warning",
+      rating: 4.5
+    },
+    3: {
+      name: "Onitsuka Tiger",
+      price: "₫499.000",
+      description: "Thiết kế nhẹ, thoáng khí, phù hợp tập gym.",
+      image: "imgs/giay3_1.png",
+      images: ["imgs/giay3_1.png","imgs/giay3_2.jpeg","imgs/giay3_3.jpg"],
+      stock: 15,
+      stockClass: "progress-bar-danger",
+      rating: 3.5
+    }
+  };
+
+  // Lấy ID sản phẩm từ URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get('id') || 1;
+  const product = products[productId];
+
+  // Hiển thị thông tin
+  document.getElementById('product-name').textContent = product.name;
+  document.getElementById('product-price').textContent = product.price;
+  document.getElementById('product-description').textContent = product.description;
+
+  const mainImage = document.getElementById('product-image');
+  mainImage.src = product.image;
+  mainImage.setAttribute('xoriginal', product.image);
+
+  const stockBar = document.getElementById('stock-bar');
+  stockBar.style.width = product.stock + '%';
+  stockBar.textContent = product.stock + '% còn hàng';
+  stockBar.className = 'progress-bar ' + product.stockClass;
+
+  // Hiển thị rating
+  $('#product-rating').rating('update', product.rating);
+
+  // Thêm thumbnails và swap hình chính khi click
+  const thumbsContainer = document.getElementById('product-thumbs');
+  product.images.forEach(img => {
+    const thumb = document.createElement('img');
+    thumb.src = img;
+    thumb.style.marginRight = '10px';
+    thumb.style.cursor = 'pointer';
+    thumb.onclick = function() {
+      mainImage.src = img;
+      mainImage.setAttribute('xoriginal', img);
+    }
+    thumbsContainer.appendChild(thumb);
+  });
+
+  // Khởi tạo xZoom
+  $(document).ready(function() {
+    $('#product-image').xzoom({zoomWidth:400, title:true, tint:'#333', Xoffset:15, position:'right'});
+  });
+</script>
+</body>
+</html>
